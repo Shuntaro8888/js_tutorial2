@@ -1,0 +1,14 @@
+#!/home/ufugf/.nvm/versions/node/v22.18.0/bin/node
+
+let fs = require("fs");
+let Phrase = require("roguri-palindrome");
+
+let text = fs.readFileSync("phrases.txt", "utf-8");
+
+text.split("\n").forEach(function(line) {
+  let phrase = new Phrase(line);
+  if (phrase.palindrome()) {
+    console.log("検出されたパリンドローム: ", line);
+    fs.appendFileSync("palindromes.txt", line + "\n");
+  }
+});

@@ -1,0 +1,36 @@
+#!/home/ufugf/.nvm/versions/node/v22.18.0/bin/node
+
+let urllib = require("urllib");
+let url;
+if (process.argv[2]) {
+    url = process.argv[2];
+} else {
+    console.log("処理したいURLを書いてください")
+    process.exit();
+}
+
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
+async function fetchAndProcessArticle() {
+    let { error, data, response } = await urllib.request(url, { followRedirect: true });
+    let body = data.toString();
+    // DOMをシミュレートする
+    let { document } = (new JSDOM(body)).window;
+
+    // すべてのパラグラフと参照情報を一括で取り出す
+    let paragraphs = document.querySelectorAll("p");
+    let references = document.querySelectorAll(".reference");
+
+    // 参照情報を削除する
+    references.forEach(function (reference) {
+        reference.remove();
+    });
+
+    // すべてのパラグラフを出力する
+    paragraphs.forEach(function (paragraph) {
+        console.log(paragraph.textContent);
+    });
+}
+
+fetchAndProcessArticle();
